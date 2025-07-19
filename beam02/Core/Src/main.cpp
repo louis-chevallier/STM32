@@ -121,7 +121,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     */
     a ++;
     bvalue = (GPIO_PinState)(a%2);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, bvalue);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, bvalue);
 
     for (int i = 0; i < NN; i+=4) {
     	buf3.put(AD_RES_BUFFER[i+3]);

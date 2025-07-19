@@ -1,0 +1,19 @@
+../Core/Src/main.cpp:111:6:void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*)	2
+../Core/Src/main.cpp:147:5:int main()	1
+../Core/Src/main.cpp:206:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:252:13:void MX_ADC1_Init()	6
+../Core/Src/main.cpp:331:13:void MX_TIM2_Init()	7
+../Core/Src/main.cpp:390:13:void MX_DMA_Init()	1
+../Core/Src/main.cpp:408:13:void MX_GPIO_Init()	1
+../Core/Src/main.cpp:464:6:void Error_Handler()	1
+../Core/Src/main.cpp:37:3:Buf<size, T>::Buf() [with int size = 219; T = int]	1
+../Core/Src/main.cpp:37:3:Buf<size, T>::Buf() [with int size = 146; T = int]	1
+../Core/Src/main.cpp:37:3:Buf<size, T>::Buf() [with int size = 73; T = int]	1
+../Core/Src/main.cpp:38:8:void Buf<size, T>::put(const T&) [with int size = 219; T = int]	1
+../Core/Src/main.cpp:38:8:void Buf<size, T>::put(const T&) [with int size = 146; T = int]	1
+../Core/Src/main.cpp:38:8:void Buf<size, T>::put(const T&) [with int size = 73; T = int]	1
+../Core/Src/main.cpp:42:5:T Buf<size, T>::last() const [with int size = 219; T = int]	1
+../Core/Src/main.cpp:42:5:T Buf<size, T>::last() const [with int size = 146; T = int]	1
+../Core/Src/main.cpp:42:5:T Buf<size, T>::last() const [with int size = 73; T = int]	1
+../Core/Src/main.cpp:473:1:void __static_initialization_and_destruction_0()	1
+../Core/Src/main.cpp:473:1:cpp)	1
