@@ -65,6 +65,7 @@ template <int size, typename T> struct Buf {
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DAC_HandleTypeDef hdac1;
 DMA_HandleTypeDef hdma_adc1;
 
 TIM_HandleTypeDef htim2;
@@ -190,6 +191,7 @@ int main(void)
 		  HAL_Delay(v);
 	  }
 	  b++;
+	  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_R, v);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
