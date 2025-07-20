@@ -8,23 +8,24 @@
 
 #include "main.h"
 
+/*
 extern DAC_HandleTypeDef hdac;
-
+*/
 template <int size, typename T> struct Buf {
   T buffer[size];
   unsigned int p;
-  Buf() : p(0) {}
+  Buf() : p(0) {
+	  for (int i = 0; i < size; i++) put(i);
+  }
   void put(const T &t) {
     p = (p+1)%size;
     buffer[p] = t;
   }
-  T last() const { return buffer[p]; }
-  int length() const { return p; }
+  const T queue() const { return buffer[(p+1)%size]; }
+  const T head() const { return buffer[p]; }
 };
 
 
-const int NN = 1024*10;
-uint32_t AD_RES_BUFFER[NN];
 
 const float speed_sound_m_sec = 340.;
 const float inter_like_dist = 0.1;
@@ -50,10 +51,19 @@ long int  a = 0;
 GPIO_PinState bvalue;
 long int b = 0;
 
+extern "C" long int acc;
+extern ADC_HandleTypeDef hadc1;
 extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+extern "C" int pgm_loop() ;
+extern "C" int pgm_init();
 
-extern "C" int loop() ;
+const int NN = 1024*10;
+uint32_t AD_RES_BUFFER[NN];
 
+int pgm_init() {
+	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, NN);
+	return 0;
+}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
@@ -69,18 +79,24 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     a ++;
     bvalue = (GPIO_PinState)(a%2);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, bvalue);
-
     for (int i = 0; i < NN; i+=4) {
     	buf3.put(AD_RES_BUFFER[i+3]);
     	buf2.put(AD_RES_BUFFER[i+2]);
     	buf1.put(AD_RES_BUFFER[i+1]);
-    	int g = (AD_RES_BUFFER[i] + buf3.last() + buf2.last() + buf1.last())/4;
+    	int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
     	buf_out.put(g);
     }
 }
 
-int loop()
+int pgm_loop()
 {
+	int hh = buf3.head();
+	int qq = buf3.queue();
+	buf3.put(-1);
+	int hh1 = buf3.head();
+	int qq1 = buf3.queue();
+	//a++;
+	//acc ++;
 	while(1) {
 		int v = AD_RES_BUFFER[0]/10;
 		b++;
@@ -91,7 +107,8 @@ int loop()
 			HAL_Delay(v);
 		}
 		b++;
-		HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, v);
+		//acc ++;
+		//HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, v);
 	}
 	return 0;
 }
