@@ -7,25 +7,36 @@
 
 
 #include "main.h"
-
+#include <math.h>
 /*
 extern DAC_HandleTypeDef hdac;
 */
+
+template <typename T> T square(const T t) { return t*t; }
+
+
 template <int size, typename T> struct Buf {
   T buffer[size];
+  long int sum = 0;
+  long int var = 0;
   unsigned int p;
   Buf() : p(0) {
 	  for (int i = 0; i < size; i++) put(i);
   }
   void put(const T &t) {
     p = (p+1)%size;
-    buffer[p] = t;
+    const auto cc = buffer[p];
+    sum -= cc;
+    var -= square(cc-mean());
+	buffer[p] = t;
+    sum += t;
+    var += square(t-mean());
   }
   const T queue() const { return buffer[(p+1)%size]; }
+  const T mean() const { return sum/size; }
+  const T ecart_type() const { return sqrtf(var/size);  }
   const T head() const { return buffer[p]; }
 };
-
-
 
 const float speed_sound_m_sec = 340.;
 const float inter_like_dist = 0.1;
@@ -46,6 +57,10 @@ Buf<n_samples_i*3, int> buf3;
 Buf<n_samples_i*2, int> buf2;
 Buf<n_samples_i, int> buf1;
 Buf<n_samples_i, int> buf_out;
+
+
+auto smn  = buf3.mean();
+auto sec  = buf3.ecart_type();
 
 long int  a = 0;
 GPIO_PinState bvalue;
@@ -99,6 +114,9 @@ int pgm_loop()
 	//acc ++;
 	while(1) {
 		int v = AD_RES_BUFFER[0]/10;
+		auto mn  = buf3.mean();
+		auto ec = buf3.ecart_type();
+		v = buf3.ecart_type();
 		b++;
 		if (1) {
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)0);
