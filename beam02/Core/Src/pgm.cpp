@@ -1,3 +1,11 @@
+/*
+ * pgm.cpp
+ *
+ *  Created on: Jul 20, 2025
+ *      Author: louis
+ */
+
+
 #include "main.h"
 
 extern DAC_HandleTypeDef hdac;
@@ -44,7 +52,7 @@ long int b = 0;
 
 extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 
-extern "C" int loop_body() ;
+extern "C" int loop() ;
 
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
@@ -69,22 +77,23 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     	int g = (AD_RES_BUFFER[i] + buf3.last() + buf2.last() + buf1.last())/4;
     	buf_out.put(g);
     }
-
-
 }
 
-int loop_body() 
+int loop()
 {
-  int v = AD_RES_BUFFER[0]/10;
-  b++;
-  if (1) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)0);
-    HAL_Delay(v);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)1);
-    HAL_Delay(v);
-  }
-  b++;
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, v);
-  return 0;
+	while(1) {
+		int v = AD_RES_BUFFER[0]/10;
+		b++;
+		if (1) {
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)0);
+			HAL_Delay(v);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)1);
+			HAL_Delay(v);
+		}
+		b++;
+		HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, v);
+	}
+	return 0;
 }
+
 
