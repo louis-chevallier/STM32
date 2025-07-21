@@ -8,6 +8,7 @@
 
 #include "main.h"
 #include <math.h>
+#include <cstdio>
 /*
 extern DAC_HandleTypeDef hdac;
 */
@@ -71,14 +72,25 @@ extern ADC_HandleTypeDef hadc1;
 extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 extern "C" int pgm_loop() ;
 extern "C" int pgm_init();
-
+extern "C" int _write(int file, char *ptr, int len);
 const int NN = 1024*10;
 uint32_t AD_RES_BUFFER[NN];
 
 int pgm_init() {
+
+	printf("coucou\n");
+
 	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, NN);
 	return 0;
 }
+
+int _write(int file, char *ptr, int len) {
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx ++) {
+		ITM_SendChar(*ptr++);
+	}
+	return len;
+	}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
