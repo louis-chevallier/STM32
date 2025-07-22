@@ -25,7 +25,9 @@
 /* USER CODE END Includes */
 extern DMA_HandleTypeDef hdma_adc1;
 
-extern DMA_HandleTypeDef hdma_dac2;
+extern DMA_HandleTypeDef hdma_dac1;
+
+extern DMA_HandleTypeDef hdma_tim6_up;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -198,31 +200,31 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**DAC GPIO Configuration
-    PA5     ------> DAC_OUT2
+    PA4     ------> DAC_OUT1
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_5;
+    GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* DAC DMA Init */
-    /* DAC2 Init */
-    hdma_dac2.Instance = DMA1_Stream6;
-    hdma_dac2.Init.Channel = DMA_CHANNEL_7;
-    hdma_dac2.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    hdma_dac2.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_dac2.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_dac2.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-    hdma_dac2.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_dac2.Init.Mode = DMA_CIRCULAR;
-    hdma_dac2.Init.Priority = DMA_PRIORITY_MEDIUM;
-    hdma_dac2.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_dac2) != HAL_OK)
+    /* DAC1 Init */
+    hdma_dac1.Instance = DMA1_Stream5;
+    hdma_dac1.Init.Channel = DMA_CHANNEL_7;
+    hdma_dac1.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_dac1.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_dac1.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_dac1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+    hdma_dac1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_dac1.Init.Mode = DMA_CIRCULAR;
+    hdma_dac1.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_dac1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    if (HAL_DMA_Init(&hdma_dac1) != HAL_OK)
     {
       Error_Handler();
     }
 
-    __HAL_LINKDMA(hdac,DMA_Handle2,hdma_dac2);
+    __HAL_LINKDMA(hdac,DMA_Handle1,hdma_dac1);
 
     /* USER CODE BEGIN DAC_MspInit 1 */
 
@@ -249,12 +251,12 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
     __HAL_RCC_DAC_CLK_DISABLE();
 
     /**DAC GPIO Configuration
-    PA5     ------> DAC_OUT2
+    PA4     ------> DAC_OUT1
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
 
     /* DAC DMA DeInit */
-    HAL_DMA_DeInit(hdac->DMA_Handle2);
+    HAL_DMA_DeInit(hdac->DMA_Handle1);
     /* USER CODE BEGIN DAC_MspDeInit 1 */
 
     /* USER CODE END DAC_MspDeInit 1 */
@@ -300,6 +302,26 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /* USER CODE END TIM6_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_TIM6_CLK_ENABLE();
+
+    /* TIM6 DMA Init */
+    /* TIM6_UP Init */
+    hdma_tim6_up.Instance = DMA1_Stream1;
+    hdma_tim6_up.Init.Channel = DMA_CHANNEL_7;
+    hdma_tim6_up.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_tim6_up.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_tim6_up.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_tim6_up.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+    hdma_tim6_up.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_tim6_up.Init.Mode = DMA_CIRCULAR;
+    hdma_tim6_up.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_tim6_up.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    if (HAL_DMA_Init(&hdma_tim6_up) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(htim_base,hdma[TIM_DMA_ID_UPDATE],hdma_tim6_up);
+
     /* USER CODE BEGIN TIM6_MspInit 1 */
 
     /* USER CODE END TIM6_MspInit 1 */
@@ -374,6 +396,9 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
     /* USER CODE END TIM6_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_TIM6_CLK_DISABLE();
+
+    /* TIM6 DMA DeInit */
+    HAL_DMA_DeInit(htim_base->hdma[TIM_DMA_ID_UPDATE]);
     /* USER CODE BEGIN TIM6_MspDeInit 1 */
 
     /* USER CODE END TIM6_MspDeInit 1 */
