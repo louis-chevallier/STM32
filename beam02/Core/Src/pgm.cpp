@@ -96,15 +96,13 @@ extern "C" int _write(int file, char *ptr, int len);
 
 const int NN = 1024;
 uint32_t AD_RES_BUFFER[NN];
-uint32_t DA_RES_BUFFER[NN];
+uint32_t DA_RES_BUFFER[NN/4];
 
 int pgm_init() {
 
-	printf("coucou\n");
-
 	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, NN);
-	//HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, DA_RES_BUFFER, NN, DAC_ALIGN_12B_R);
-	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Wave_LUT, wave_len, DAC_ALIGN_12B_R);
+	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, DA_RES_BUFFER, NN/4, DAC_ALIGN_12B_R);
+	//HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Wave_LUT, wave_len, DAC_ALIGN_12B_R);
 	HAL_TIM_Base_Start_IT(&htim6);
 
 	return 0;
@@ -125,6 +123,9 @@ int _writeXXX(int file, char *ptr, int len) {
 extern "C"  void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef *hdac) {
     //do_dac(&dma_buffer[DMA_BUFFER_SIZE]);
 	dac1 ++;
+    bvalue = (GPIO_PinState)(dac1 % 2);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, bvalue);
+
 }
 
 
@@ -132,7 +133,7 @@ extern "C"  void HAL_DAC_ConvHalfCpltCallbackCh1(DAC_HandleTypeDef *hdac) {
     //do_dac(&dma_buffer[0]);
 	dac2 ++;
 }
-
+/*
 extern "C"  void HAL_DAC_ConvCpltCallbackCh2(DAC_HandleTypeDef *hdac) {
     //do_dac(&dma_buffer[DMA_BUFFER_SIZE]);
 	dac1 ++;
@@ -144,7 +145,7 @@ extern "C"  void HAL_DAC_ConvHalfCpltCallbackCh2(DAC_HandleTypeDef *hdac) {
 	dac2 ++;
 }
 
-
+*/
 extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     // Conversion Complete & DMA Transfer Complete As Well
@@ -158,12 +159,15 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     */
     adc1 ++;
     bvalue = (GPIO_PinState)(adc1 % 2);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, bvalue);
+    //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, bvalue);
     for (int i = 0; i < NN; i+=4) {
     	buf3.put(AD_RES_BUFFER[i+3]);
     	buf2.put(AD_RES_BUFFER[i+2]);
     	buf1.put(AD_RES_BUFFER[i+1]);
     	int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
+
+    	DA_RES_BUFFER[i/4] = AD_RES_BUFFER[i+3];
+
     	buf_out.put(g);
     }
 }
@@ -189,7 +193,6 @@ int pgm_loop()
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)1);
 			HAL_Delay(v);
 		}
-        printf("coucou\n"); fflush(stdout);
 
 		b++;
 		//acc ++;
