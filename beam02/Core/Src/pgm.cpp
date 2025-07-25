@@ -96,12 +96,12 @@ extern "C" int pgm_init();
 extern "C" int _write(int file, char *ptr, int len);
 
 const int NN = 4; //1024/4;
-uint32_t AD_RES_BUFFER[NN];
+uint16_t AD_RES_BUFFER[NN];
 uint32_t DA_RES_BUFFER[NN/4];
 
 int pgm_init() {
 
-	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, NN);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)AD_RES_BUFFER, NN);
 	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, DA_RES_BUFFER, NN/4, DAC_ALIGN_12B_R);
 	//HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Wave_LUT, wave_len, DAC_ALIGN_12B_R);
 	HAL_TIM_Base_Start_IT(&htim6);
