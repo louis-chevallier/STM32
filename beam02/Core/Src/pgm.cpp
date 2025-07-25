@@ -102,8 +102,8 @@ uint32_t DA_RES_BUFFER[NN/4];
 int pgm_init() {
 
 	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, NN);
-	//HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, DA_RES_BUFFER, NN/4, DAC_ALIGN_12B_R);
-	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Wave_LUT, wave_len, DAC_ALIGN_12B_R);
+	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, DA_RES_BUFFER, NN/4, DAC_ALIGN_12B_R);
+	//HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Wave_LUT, wave_len, DAC_ALIGN_12B_R);
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim8);
 	auto sys_clock_MHz = SystemCoreClock / 1000000;
@@ -164,16 +164,21 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, bvalue_adc);
     /*
     for (int i = 0; i < NN; i+=4) {
-    	buf3.put(AD_RES_BUFFER[i+3]);
+       	buf3.put(AD_RES_BUFFER[i+3]);
     	buf2.put(AD_RES_BUFFER[i+2]);
     	buf1.put(AD_RES_BUFFER[i+1]);
     	int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
-
     	DA_RES_BUFFER[i/4] = AD_RES_BUFFER[i+3];
 
     	buf_out.put(g);
     }
     */
+    int g = 0;
+    for (int i = 0; i < 4; i++) {
+    	g += AD_RES_BUFFER[i];
+    }
+    DA_RES_BUFFER[0] = g;
+
 }
 
 int pgm_loop()
