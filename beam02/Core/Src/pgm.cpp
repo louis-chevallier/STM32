@@ -174,10 +174,10 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
     */
     int g = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 2; i++) {
     	g += AD_RES_BUFFER[i];
     }
-    DA_RES_BUFFER[0] = g;
+    DA_RES_BUFFER[0] = g/2;
 
 }
 

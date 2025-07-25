@@ -15,6 +15,10 @@
 
 ![pinout](pinout.png)
 
+- DAC : PA4
+- ADC : PA6, PA7, PB0, PB1
+
+
 
 # config, freq
 
