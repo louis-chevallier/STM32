@@ -30,10 +30,10 @@ template <int size, typename T> struct Buf {
     p = (p+1)%size;
     const auto cc = buffer[p];
     sum -= cc;
-    var -= square(cc-mean());
+    //var -= square(cc-mean());
 	buffer[p] = t;
     sum += t;
-    var += square(t-mean());
+    //var += square(t-mean());
   }
   const T queue() const { return buffer[(p+1)%size]; }
   const T mean() const { return sum/size; }
@@ -56,10 +56,15 @@ const float dist = 0.1;
 const float duration_dist = dist / speed_sound_m_sec;
 const float n_samples = duration_dist / T_sample;
 const int n_samples_i = (int)n_samples;
-Buf<n_samples_i*3, int> buf3;
-Buf<n_samples_i*2, int> buf2;
-Buf<n_samples_i, int> buf1;
-Buf<n_samples_i, int> buf_out;
+
+const int n_samples2 = 18;
+
+
+
+Buf<n_samples2*3, int> buf3;
+Buf<n_samples2*2, int> buf2;
+Buf<n_samples2, int> buf1;
+Buf<n_samples2, int> buf_out;
 
 uint32_t Wave_LUT[] = {
     2048, 2149, 2250, 2350, 2450, 2549, 2646, 2742, 2837, 2929, 3020, 3108, 3193, 3275, 3355,
@@ -162,23 +167,24 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     adc1 ++;
     bvalue_adc = (GPIO_PinState)(adc1 % 2);
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, bvalue_adc);
-    /*
+
     for (int i = 0; i < NN; i+=4) {
        	buf3.put(AD_RES_BUFFER[i+3]);
     	buf2.put(AD_RES_BUFFER[i+2]);
     	buf1.put(AD_RES_BUFFER[i+1]);
-    	int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
-    	DA_RES_BUFFER[i/4] = AD_RES_BUFFER[i+3];
+    	const int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
+    	DA_RES_BUFFER[i/4] = g; //AD_RES_BUFFER[i+3];
 
-    	buf_out.put(g);
+    	//buf_out.put(g);
     }
-    */
+
+    /*
     int g = 0;
     for (int i = 0; i < 2; i++) {
     	g += AD_RES_BUFFER[i];
     }
     DA_RES_BUFFER[0] = g/2;
-
+     */
 }
 
 int pgm_loop()
