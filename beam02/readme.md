@@ -19,8 +19,13 @@ J'ai le mcu STM32F407ZGT6
   prendre la version linux generic ( because linux mint 22 )
   
 
+# led embarquée
 
+GPIOC 13
 
+# schéma board FK407M2
+
+[doc pdf ](https://fruitoftheshed.com/wiki/doku.php?id=mmbasic_hardware:armmite_f407xgt6_user_manual_firmware_and_source)
 
 # connecteur debug
 

@@ -84,7 +84,8 @@ auto smn  = buf3.mean();
 auto sec  = buf3.ecart_type();
 
 long int  adc1 = 0;
-GPIO_PinState bvalue, bvalue_adc;
+long int  led_blink = 0, led_blink_v = 0;
+GPIO_PinState bvalue, bvalue_adc  = (GPIO_PinState)0;
 long int b = 0;
 
 extern "C" long int acc;
@@ -112,6 +113,9 @@ int pgm_init() {
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_TIM_Base_Start_IT(&htim8);
 	auto sys_clock_MHz = SystemCoreClock / 1000000;
+
+        printf("Initialized\n");
+        
 	return 0;
 }
 
@@ -165,6 +169,14 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     TIM2->CCR4 = (AD_RES_BUFFER[3] << 4);  // ADC CH9 -> PWM CH4
     */
     adc1 ++;
+
+    led_blink ++;
+    if (led_blink > 30000 ) {
+      led_blink = 0;
+      led_blink_v ++;
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)(led_blink_v%2));
+    }
+    
     bvalue_adc = (GPIO_PinState)(adc1 % 2);
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, bvalue_adc);
 
