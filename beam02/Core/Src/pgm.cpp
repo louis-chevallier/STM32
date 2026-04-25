@@ -175,6 +175,7 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
       led_blink = 0;
       led_blink_v ++;
       HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)(led_blink_v%2));
+      printf("blink\n");
     }
     
     bvalue_adc = (GPIO_PinState)(adc1 % 2);

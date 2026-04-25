@@ -31,17 +31,27 @@ GPIOC 13
 
 5V ( et pas 3.3)
 
-# clock DAC
+# clock, timer, ADC, DAC
+
+## ADC1 => timer 8
+
+ADC In : pins 6,7,8,9 ( A6, A7, B0, B1)
+
+- sys clock freq = 160MHz
+- PSC 99
+- desired timer freq : 100KHz
+- solve : => ARR=15
+
+## DAC => timer 6
+
+DAC out : PA4
+
+
+
+
 
 
 [notebook](https://colab.research.google.com/drive/1mBSUoHLU5fF2yGJLQd4LiWSCUpsHnCSH?usp=sharing)
-
-
-- sys clock freq = 80MHz
-- PSC 99
-- desired timer freq : 100KHz
-- solve : => ARR=9
-
 
 
 
