@@ -218,5 +218,3 @@ int pgm_loop()
 	}
 	return 0;
 }
-
-

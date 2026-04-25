@@ -1,4 +1,27 @@
 
+# MCU 
+
+J'ai le mcu STM32F407ZGT6
+
+- pour spécifier la config du hard et générer le code : STM32CubeMX 
+  ouvrir beam02/beam02.ioc
+  => generate code
+
+
+- aller dans beam32/Core/Src
+  là est le source cpp
+  make start
+  ca utilise les outils cli : installés dans /mnt/hd1/tools/stm32ide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.linux64_1.0.100.202602081740/tools/bin/
+
+
+  je les ai installés avec l'installeur trouvé ici : https://www.st.com/en/development-tools/stm32cubeide.html
+  et https://www.st.com/en/development-tools/stm32cubeprog.html
+  prendre la version linux generic ( because linux mint 22 )
+  
+
+
+
+
 # connecteur debug
 
 5V ( et pas 3.3)
