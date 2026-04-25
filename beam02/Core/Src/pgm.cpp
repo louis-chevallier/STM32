@@ -189,6 +189,7 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
 int pgm_loop()
 {
+	auto count = 0;
 	int hh = buf3.head();
 	int qq = buf3.queue();
 	buf3.put(-1);
@@ -197,16 +198,18 @@ int pgm_loop()
 	//a++;
 	//acc ++;
 	while(1) {
+		/*
 		int v = AD_RES_BUFFER[0]/10;
 		auto mn  = buf3.mean();
 		auto ec = buf3.ecart_type();
 		v = buf3.ecart_type();
+		*/
 		b++;
 		if (1) {
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)0);
-			HAL_Delay(v);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)1);
-			HAL_Delay(v);
+			auto vv = 1000;
+			//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, (GPIO_PinState)(count%2));
+			HAL_Delay(vv);
+			count ++;
 		}
 
 		b++;

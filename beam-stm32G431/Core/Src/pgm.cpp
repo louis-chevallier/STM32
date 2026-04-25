@@ -20,6 +20,7 @@ template <typename T> T square(const T t) { return t*t; }
 
 template <int size, typename T> struct Buf {
   T buffer[size];
+  const long int _size = size;
   long int sum = 0;
   long int var = 0;
   unsigned int p;
@@ -27,7 +28,7 @@ template <int size, typename T> struct Buf {
 	  for (int i = 0; i < size; i++) put(i);
   }
   void put(const T &t) {
-    p = (p+1)%size;
+    p = (p+1)%_size;
     const auto cc = buffer[p];
     sum -= cc;
     //var -= square(cc-mean());
@@ -36,7 +37,11 @@ template <int size, typename T> struct Buf {
     //var += square(t-mean());
   }
   const T queue() const { return buffer[(p+1)%size]; }
-  const T mean() const { return sum/size; }
+  const T mean() const {
+	  auto vv = size;
+	  auto vvv = _size;
+	  return sum/_size;
+  }
   const T ecart_type() const { return sqrtf(var/size);  }
   const T head() const { return buffer[p]; }
 };
@@ -173,6 +178,7 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     	buf2.put(AD_RES_BUFFER[i+2]);
     	buf1.put(AD_RES_BUFFER[i+1]);
     	const int g = (AD_RES_BUFFER[i] + buf3.queue() + buf2.queue() + buf1.queue())/4;
+    	//const int g = buf1.queue();
     	DA_RES_BUFFER[i/4] = g; //AD_RES_BUFFER[i+3];
 
     	//buf_out.put(g);
@@ -198,6 +204,7 @@ int pgm_loop()
 	//acc ++;
 	while(1) {
 		int v = AD_RES_BUFFER[0]/10;
+		auto vv = buf3.buffer[3];
 		auto mn  = buf3.mean();
 		auto ec = buf3.ecart_type();
 		v = buf3.ecart_type();

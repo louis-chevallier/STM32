@@ -1,4 +1,8 @@
 
+# connecteur debug
+
+5V ( et pas 3.3)
+
 # clock DAC
 
 
@@ -11,14 +15,23 @@
 - solve : => ARR=9
 
 
+
+
 # pinout
 
 ![pinout](pinout.png)
 
-- DAC : PA4
-- ADC : PA6, PA7, PB0, PB1
+- DAC : PA4 - fil jaune, vers ampli
+- ADC : PA6 ( fil bleu), PA7, PB0, PB1
 
+- D1 : fin conversion ADC du groupe , (fil vert)
+- B2 : fin conversion DAC   (fil rouge) 
+- C13 : led ( freq = k * variance )
 
+- A6, A7, B0, B1 : ADC input
+
+- observation : acquisition a 59.2KHz des 4 canaux
+ 
 
 # config, freq
 
